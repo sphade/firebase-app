@@ -21,7 +21,13 @@ import SelectInput from "../../../components/SelectInput";
 import Btn from "@mui/material/Button";
 import { useAuthUser } from "../../../hooks/queries";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
-import { db } from "../../../firebase/firebase-config";
+import { db, storage } from "../../../firebase/firebase-config";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+} from "firebase/storage";
 
 const AircraftAdd = () => {
   const {
@@ -37,15 +43,36 @@ const AircraftAdd = () => {
   const [images, setImages] = useState<any[]>([]);
 
   const { enqueueSnackbar } = useSnackbar();
-  const {data:userAuth,isLoading:userAuthLoading} = useAuthUser() 
+  const { data: userAuth, isLoading: userAuthLoading } = useAuthUser();
 
-  const onSubmit = async(data: any) => {
-    await addDoc(collection(db, "airCrafts"), {
-   ...data,capacity,uid:userAuth?.uid,archive:false
-    });
+  const onSubmit = async (data: any) => {
+    let imgArr: any = [];
+    try {
+      
+      for (let i = 0; i < images.length; i++) {
+        const storageRef = ref(
+          storage,
+          `airCraft/${new Date().getMilliseconds()}`
+        );
+        await uploadBytes(storageRef, images[i]?.file);
+        const downloadUrl = await getDownloadURL(storageRef);
+        imgArr.push(downloadUrl);
+      }
+
+      await addDoc(collection(db, "airCrafts"), {
+        ...data,
+        capacity,
+        uid: userAuth?.uid,
+        archive: false,
+        productImg: imgArr,
+      });
+    } catch (error: any) {
+      alert(error);
+    }
+
     enqueueSnackbar("Aircraft added successfully", {
       variant: "success",
-    });    
+    });
   };
   const maxNumber = 4;
 
@@ -108,34 +135,27 @@ const AircraftAdd = () => {
                 </div>
 
                 <div className=" text-sm mt-10">
-                  <div className='flex gap-5 mb-5'>
-                  <TextField
-                    label="brand"
-                   
-                    fullWidth
-                    {...register("brand", {
-                      required: "this field is required",
-                    })}
-                    error={errors.brand}
-                    helperText={
-                      errors.brand && errors.brand.message
-                    }
-                  />
-                  <TextField
-                    label="model"
-                   
-                    fullWidth
-                    {...register("model", {
-                      required: "this field is required",
-                    })}
-                    error={errors.model}
-                    helperText={
-                      errors.model && errors.model.message
-                    }
-                  />
-
+                  <div className="flex gap-5 mb-5">
+                    <TextField
+                      label="brand"
+                      fullWidth
+                      {...register("brand", {
+                        required: "this field is required",
+                      })}
+                      error={errors.brand}
+                      helperText={errors.brand && errors.brand.message}
+                    />
+                    <TextField
+                      label="model"
+                      fullWidth
+                      {...register("model", {
+                        required: "this field is required",
+                      })}
+                      error={errors.model}
+                      helperText={errors.model && errors.model.message}
+                    />
                   </div>
-                 
+
                   <div className="flex gap-5 mb-5">
                     <SelectInput
                       control={control}
@@ -272,7 +292,7 @@ const AircraftAdd = () => {
                       performance
                     </p>
                     <div className="grid grid-cols-2 gap-10   justify-between">
-                    <PerformanceInput
+                      <PerformanceInput
                         defaultValue={""}
                         label="travel hours"
                         name="flightHours"
@@ -316,7 +336,6 @@ const AircraftAdd = () => {
                         }}
                         errors={errors.maxAltitude}
                       />
-
                     </div>
                   </div>
                   <div>
@@ -371,9 +390,7 @@ const AircraftAdd = () => {
                   </div>
                 </div>
 
-                <Button full>
-                  add
-                </Button>
+                <Button full>add</Button>
               </form>
             ) : (
               <div className="w-[522px] mb-5 border-[#BDBDBD] px-12 border rounded-lg mx-auto ">

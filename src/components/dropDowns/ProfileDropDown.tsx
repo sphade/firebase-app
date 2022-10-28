@@ -5,6 +5,7 @@ import { ArrowRightSmallIcon } from "../../assets/images/icons";
 import localforage from "localforage";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/firebase-config";
+import { useQueryClient } from "react-query";
 
 const ProfileDropDown = ({
   anchorEl,
@@ -13,7 +14,7 @@ const ProfileDropDown = ({
   anchorEl: any;
   setAnchorEl: any;
 }) => {
-  
+  const queryClient = useQueryClient()
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -56,6 +57,7 @@ const ProfileDropDown = ({
             key={id}
             onClick={() => {
               if (name === "logout") {
+                queryClient.clear()
                 signOut(auth)
               }
             }}

@@ -8,6 +8,7 @@ import { setAircraftDetails } from "../../redux/slices/AircraftDetailsSlice";
 import AircraftCardDropDown from "../dropDowns/AircraftCardDropDown";
 
 const AircraftCard = (props: any) => {
+  console.log(props)
   const dispatch = useDispatch()
   const [dropDownState, setDropDownState] =
     React.useState<HTMLButtonElement | null>(null);
@@ -21,7 +22,7 @@ const AircraftCard = (props: any) => {
       
       <div className=" rounded-t-md h-[100px] overflow-hidden">
         <img
-          src={'props?.ProductImages[0]?.url'}
+          src={props?.productImg[0]}
           alt="jetPic"
           className="bg-gray-200 object-cover w-full h-full"
         />

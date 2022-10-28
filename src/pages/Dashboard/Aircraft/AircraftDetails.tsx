@@ -11,10 +11,11 @@ import AircraftDetailsSkeleton from "../../../skeleton/AircraftDetailsSkeleton";
 import { Skeleton } from "@mui/material";
 import { Gallery, Item } from "react-photoswipe-gallery";
 import { formatNumberToCurrency } from "../../../hooks/useFormatNumberToCurrency";
+import { useAircraft } from "../../../hooks/queries";
 const AircraftDetails = () => {
-  // const { id } = useParams();
+  const { id } = useParams();
   // const { data: details, isLoading } = useAirCraftDetails({id});
- 
+ const {data:details,isLoading}= useAircraft(id|| '')
 
   return (
     <div>
@@ -24,11 +25,11 @@ const AircraftDetails = () => {
           <BackButton />
 
           <h1 className="header-heading">
-            {true ? (
+            {isLoading ? (
               <Skeleton variant={"text"} animation="wave" width="200px" />
-            ) : (
-              'rrrr 666'
-            )}
+            ) : 
+            `${details?.brand} ${details?.model}`
+            }
           </h1>
         </div>
         <div className="flex items-center gap-24">
@@ -36,12 +37,12 @@ const AircraftDetails = () => {
         </div>
       </header>
       <main>
-        {true ? (
+        {isLoading ? (
           <AircraftDetailsSkeleton />
         ) : (
           <div className="rounded-lg  p-6 w-[522px] mx-auto font-medium border mb-3 border-[#BDBDBD]">
             <img
-              src={'jj'}
+              src={details?.productImg[0]}
               alt="aircraftPicture"
               className="h-[230px] w-full object-cover bg-gray-200"
             />
@@ -50,19 +51,19 @@ const AircraftDetails = () => {
               <div className="py-4 flex items-center justify-between">
                 <p className="capitalize text-[#828282]">aircraft Name: </p>
                 <p className="capitalize text-tertiary font-semibold   ">
-                  {'details?.brand'} {'details?.model'}
+                  {details?.brand} {details?.model}
                 </p>
               </div>{" "}
               <div className="py-4 flex items-center justify-between">
                 <p className="capitalize text-[#828282]">Service type: </p>
                 <p className="capitalize text-tertiary font-semibold   ">
-                  {'details?.serviceType'}
+                  {details?.serviceType}
                 </p>
               </div>{" "}
               <div className="py-4 flex items-center justify-between">
                 <p className="capitalize text-[#828282]">aircraft type: </p>
                 <p className="capitalize text-tertiary font-semibold   ">
-                  {'details?.airCraftType'}
+                  {details?.airCraftType}
                 </p>
               </div>{" "}
               <div className="py-4 flex items-center justify-between">
@@ -87,17 +88,17 @@ const AircraftDetails = () => {
               <div className="py-4 flex flex-col gap-3 ">
                 <p className="capitalize text-[#828282]">description: </p>
                 <p className="capitalize text-tertiary font-semibold   ">
-                  {'details?.description'}
+                  {details?.description}
                 </p>
               </div>
               <div className="py-4 flex flex-col gap-3 ">
                 <p className="capitalize text-[#828282]">photos: </p>
                 <div className=" flex gap-2 items-center">
-                  {/* <Gallery>
-                    {'details.ProductImages.map'((image: any, id: number) => (
+                  <Gallery>
+                    {details?.productImg.map((image: any, id: number) => (
                       <Item
-                        original={image.url}
-                        thumbnail={image.url}
+                        original={image}
+                        thumbnail={image}
                         width="1024"
                         height="608"
                         key={id}
@@ -107,13 +108,13 @@ const AircraftDetails = () => {
                             ref={ref as React.RefObject<HTMLImageElement>}
                             onClick={open}
                             className="w-[103px] h-[69px] cursor-pointer rounded bg-gray-200"
-                            src={image.url}
+                            src={image}
                             alt=''
                           />
                         )}
                       </Item>
                     ))}
-                  </Gallery> */}
+                  </Gallery>
                 </div>
               </div>
               <div className="py-4 flex flex-col gap-3 ">
@@ -131,13 +132,13 @@ const AircraftDetails = () => {
                           travel hour:{" "}
                         </p>
                         <p className="capitalize text-tertiary font-semibold   ">
-                          {'details?.flightHours'} hrs
+                          {details?.flightHours} hrs
                         </p>
                       </div>
                       <div className=" flex items-center gap-3 ">
                         <p className="capitalize text-[#828282]">max speed: </p>
                         <p className="capitalize text-tertiary font-semibold   ">
-                          {'details?.maxSpeed'} km/h
+                          {details?.maxSpeed} km/h
                         </p>
                       </div>
                       <div className=" flex items-center gap-3 ">
@@ -145,7 +146,7 @@ const AircraftDetails = () => {
                           max distance:{" "}
                         </p>
                         <p className="capitalize text-tertiary font-semibold   ">
-                          {'details?.maxRange'} square miles
+                          {details?.maxRange} square miles
                         </p>
                       </div>
                       <div className=" flex items-center gap-3 ">
@@ -153,7 +154,7 @@ const AircraftDetails = () => {
                           max altitude:{" "}
                         </p>
                         <p className="capitalize text-tertiary font-semibold   ">
-                          {'details?.maxAltitude'} ft
+                          {details?.maxAltitude} ft
                         </p>
                       </div>
                     </div>
@@ -174,7 +175,7 @@ const AircraftDetails = () => {
                           cabin width:{" "}
                         </p>
                         <p className=" text-tertiary font-semibold   ">
-                          {'details?.cabinWidth'} m
+                          {details?.cabinWidth} m
                         </p>
                       </div>
                       <div className=" flex items-center gap-3 ">
@@ -182,7 +183,7 @@ const AircraftDetails = () => {
                           cabin length:{" "}
                         </p>
                         <p className=" text-tertiary font-semibold   ">
-                          {'details?.cabinLength'} m
+                          {details?.cabinLength} m
                         </p>
                       </div>
                       <div className=" flex items-center gap-3 ">
@@ -190,7 +191,7 @@ const AircraftDetails = () => {
                           cabin height:{" "}
                         </p>
                         <p className=" text-tertiary font-semibold   ">
-                          {'details?.cabinHeight'} m
+                          {details?.cabinHeight} m
                         </p>
                       </div>
                     </div>

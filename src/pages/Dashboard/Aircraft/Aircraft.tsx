@@ -17,7 +17,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { setAirCraftTab } from "../../../redux/slices/TabSlice";
 import { Button } from "@mui/material";
-import { useAirCraft, useAuthUser } from "../../../hooks/queries";
+import { useAirCraft, useAuthUser, useCount } from "../../../hooks/queries";
 const Aircraft = () => {
 const {data:userAuth,isLoading:userAuthLoading} = useAuthUser() 
 
@@ -26,13 +26,15 @@ const {data:userAuth,isLoading:userAuthLoading} = useAuthUser()
   useEffect(() => {
     setSearch((value: string) => (value = ""));
   }, [setSearch, airCraftTab]);
-  const {data:privateJet,isLoading,isError} = useAirCraft(userAuth?.uid || '')
-  console.log(privateJet)
+  const {data:privateJet,isLoading,isError} = useAirCraft(userAuth?.uid || '','privateJet',false)
+  const helicopter = useAirCraft(userAuth?.uid || '','Helicopter',false)
+  const count = useCount(userAuth?.uid || '')
+  console.log(count)
   return (
     <div>
       <header className="header">
         <h1 className="header-heading">
-          Aircraft <span className="text-gray-400">({5})</span>
+          Aircraft <span className="text-gray-400">({count?.data})</span>
         </h1>
         <NotificationProfileHeader />
       </header>
@@ -87,7 +89,21 @@ const {data:userAuth,isLoading:userAuthLoading} = useAuthUser()
       </TabPanel>
       <TabPanel value={airCraftTab} index={1}>
         <div className="flex  min-h-[500px]  flex-wrap p-2 border shadow rounded mt-5 gap-1">
-          helicopter
+        {helicopter.isLoading ? (
+            [...new Array(4)].map((id) => <JetCardSkeleton key={id} />)
+          ) : helicopter.isError ? (
+            <div className=" w-full">
+              <Error />
+            </div>
+          ) : !helicopter.data?.length ? (
+            <div className=" w-full">
+              <EmptyCard header='you currently have no private jets' subtitle="start by adding one"/>
+            </div>
+          ) : (
+            helicopter.data?.map((data: any, id: number) => (
+              <AircraftCard {...data} key={id} />
+            ))
+          )}
         </div>
       </TabPanel>
     </div>
