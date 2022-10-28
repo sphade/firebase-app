@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* font */
+@layer base {
+  @font-face {
+    font-family: "hind";
+    font-style: normal;
+    font-weight: 500;
+    src: url("./assets/fonts/hind/Hind-Regular.ttf") format("truetype");
+   
+  }
+  @font-face {
+    font-family: "hind";
+    font-style: normal;
+    font-weight: 600;
+    src: url("./assets/fonts/hind/Hind-Medium.ttf") format("truetype");
+   
+  }
+
+  @font-face {
+    font-family: "hind";
+    font-style: normal;
+    font-weight: 700;
+    src: url("./assets/fonts/hind/Hind-SemiBold.ttf") format("truetype");
+   
+  }
+  @font-face {
+    font-family: "hind";
+    font-style: normal;
+    font-weight: 800;
+    src: url("./assets/fonts/hind/Hind-Bold.ttf") format("truetype");
+   
+  }
+
+  html,body {
+    font-family: "hind";
+    letter-spacing:.3px
+  }
+}
+@layer base {
+  html,
+  body {
+    @apply scroll-smooth;
+  }
+}
+/* utility  classes */
+
+.slick-next {
+  position: absolute;
+  z-index: 1;
+  right: 1px !important;
+  height: 15% !important;
+  width: 15% !important;
+  background: rgba(94, 90, 90, 0.247);
+}
+.slick-prev {
+  position: absolute;
+  z-index: 1;
+  left: 1px !important;
+  height: 15% !important;
+  width: 15% !important;
+  transform: rotate(180deg) translateY(10px) !important;
+}
+
+.center-element {
+  @apply flex justify-center items-center;
+}
+.default-transition {
+  @apply duration-150 ease-out;
+}
+
+.header {
+  @apply flex items-center justify-between mb-3;
+}
+.header-heading {
+  @apply text-2xl text-tertiary capitalize font-semibold;
+}
+/* active nav-link */
+.active {
+  @apply bg-primary   !text-secondary hover:!bg-primary hover:opacity-80;
+}
+
+/* mui-tabs override */
+.MuiTab-root {
+  @apply !text-xs !font-semibold !capitalize !font-hind;
+}
+
+.MuiTab-root.Mui-selected {
+  @apply !text-primary;
+}
+
+.MuiTabs-indicator {
+  @apply !bg-primary;
+}
